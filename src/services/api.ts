@@ -13,6 +13,11 @@ export async function getBlog(): Promise<Blog[]> {
   return mockDataBlog as Blog[];
 }
 
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+  const products = mockDataProduct as Product[];
+  return products.find(p => p.slug === slug);
+}
+
 /* КОГДА ПОЯВИТСЯ РЕАЛЬНЫЙ API, ТЫ ПРОСТО ЗАМЕНИШЬ КОД ВЫШЕ НА:
   export async function getProducts(): Promise<Product[]> {
     const res = await fetch('https://api.osshop.com/products');

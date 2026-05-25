@@ -53,7 +53,7 @@ export default function SliderHero() {
                     <div className="text-display md:mt-5 mt-2">{slide.title}</div>
                     <Link
                       href="/shop"
-                      className="button-main md:mt-8 mt-3 p-100 inline-block"
+                      className="button-main md:mt-8 mt-3 inline-block"
                     >
                       Shop Now
                     </Link>

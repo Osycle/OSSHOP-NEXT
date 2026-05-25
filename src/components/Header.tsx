@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useCartStore } from "@/store/useCartStore";
 
 const navItems = [
   { label: 'Demo', href: '#' },
@@ -14,6 +16,16 @@ const navItems = [
 export default function Header() {
   const [isFixed, setIsFixed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+
+	// Достаем функцию открытия и сами товары
+  const openCart = useCartStore((state) => state.openCart);
+  const items = useCartStore((state) => state.items);
+
+  // Считаем общее количество всех товаров (учитывая quantity)
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
 
   useEffect(() => {
     const onScroll = () => setIsFixed(window.scrollY > 0);
@@ -23,7 +35,7 @@ export default function Header() {
 
   return (
 		<div id="header" className={`w-full ${isFixed ? 'scrolled': ''}`}>
-			<div className="header-menu style-one absolute top-0 left-0 right-0 w-full md:h-[74px] h-[56px] bg-transparent">
+			<div className="header-menu style-one absolute top-0 left-0 right-0 w-full md:h-[74px] h-[56px]">
 				<div className="container mx-auto h-full">
 					<div className="header-main flex justify-between h-full">
 						<div className="menu-mobile-icon lg:hidden flex items-center">
@@ -35,6 +47,14 @@ export default function Header() {
 							</a>
 							<div className="menu-main h-full max-lg:hidden">
 								<ul className="flex items-center gap-8 h-full">
+									<li className="h-full flex items-center">
+										<Link
+											href="/shop"
+											className={`text-button-uppercase duration-300 h-full flex items-center justify-center${pathname === '/shop' ? ' active' : ''}`}
+										>
+											Shop
+										</Link>
+									</li>
 									<li className="h-full relative">
 										<a href="#!" className="text-button-uppercase duration-300 h-full flex items-center justify-center"> Pages </a>
 										<div className="sub-menu py-3 px-5 -left-10 absolute bg-white rounded-b-xl">
@@ -88,9 +108,14 @@ export default function Header() {
 									<i className="ph-bold ph-heart text-2xl"></i>
 									<span className="quantity wishlist-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">0</span>
 								</div>
-								<div className="max-md:hidden cart-icon flex items-center relative cursor-pointer">
+								<div 
+									className="max-md:hidden cart-icon flex items-center relative cursor-pointer"
+									onClick={openCart}
+								>
 									<i className="ph-bold ph-handbag text-2xl"></i>
-									<span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">0</span>
+									<span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">
+										{totalItems}
+									</span>
 								</div>
 							</div>
 						</div>
@@ -115,6 +140,11 @@ export default function Header() {
 							</div>
 							<div className="list-nav mt-6">
 								<ul>
+									<li>
+										<Link href="/shop" className="text-xl font-semibold flex items-center justify-between mt-5">
+											Shop
+										</Link>
+									</li>
 									<li>
 										<a href="#!" className="text-xl font-semibold flex items-center justify-between mt-5"
 											>Pages

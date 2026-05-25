@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/types/product';
+import { useCartStore } from "@/store/useCartStore";
 
 interface Props {
   product: Product;
@@ -9,6 +10,21 @@ interface Props {
 }
 
 export default function ProductCard({ product, showSoldBar = false }: Props) {
+
+  const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
+
+  const handleAddToCart = () => {
+    openCart()
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.thumbImage[0],
+      quantity: 1
+    });
+  };
+
   const discount =
     product.originPrice > product.price
       ? Math.round((1 - product.price / product.originPrice) * 100)
@@ -67,7 +83,10 @@ export default function ProductCard({ product, showSoldBar = false }: Props) {
             <div className="quick-view-btn w-full text-button-uppercase py-2 text-center rounded-full duration-300 bg-white hover:bg-black hover:text-white">
               Quick View
             </div>
-            <div className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white">
+            <div 
+              onClick={handleAddToCart}
+              className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
+            >
               Add To Cart
             </div>
           </div>

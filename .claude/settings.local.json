@@ -4,7 +4,18 @@
       "Bash(npx tsc *)",
       "Bash(cd /d C:\\\\Myprojects\\\\osshop-next)",
       "Bash(npm run *)",
-      "Bash(ls \"C:\\\\Myprojects\")"
+      "Bash(ls \"C:\\\\Myprojects\")",
+      "Bash(Select-String -Path \"C:\\\\Myprojects\\\\Shop-basesorces\\\\anvogue-html\\\\shop-breadcrumb1.html\" -Pattern \"breadcrumb-one|shop-list-filter|main-content|breadcrumb\")",
+      "Bash(Select-Object -First 20)",
+      "Bash(Format-Table LineNumber, Line -Wrap)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3010/shop)",
+      "Bash(curl -s http://localhost:3010/shop)",
+      "Bash(curl -s http://localhost:3010)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(echo \"DONE:$?\")",
+      "Bash(curl -s http://localhost:3010/product/mesh-shirt)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3010/product/mesh-shirt)"
     ]
   }
 }

@@ -6,6 +6,7 @@ import TopNav from '@/components/TopNav';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Script from "next/script";
+import Cart from '@/components/ui/Cart';
 
 export const metadata: Metadata = {
   title: 'Anvogue - Next.js',
@@ -20,6 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        
+        <Cart />
         <TopNav />
         <Header />
         <main>{children}</main>
@@ -28,10 +31,10 @@ export default function RootLayout({
           src="/js/phosphor-icons.js"
           strategy="beforeInteractive"
         />
-        <Script
+        {/* <Script
           src="/js/main.js"
           strategy="beforeInteractive"
-        />
+        /> */}
       </body>
     </html>
   );
