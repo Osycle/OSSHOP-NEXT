@@ -1,0 +1,9 @@
+
+@theme {
+  /* Говорим тайлвинду связать имя 'surface' с CSS-переменной из globals.scss */
+  --color-surface: var(--surface);
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --color-secondary: var(--secondary);
+}
+

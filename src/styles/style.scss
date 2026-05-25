@@ -1,0 +1,67 @@
+/********* Table of contents *********/
+/*** custom-swiper ***/
+/****** Slider - Swiper Pagination ***/
+/****** Swiper Navigation ***/
+/****** Swiper Scrollbar ***/
+/*** Main color ***/
+/*** Reset ***/
+/*** Main class used in Anvogue ***/
+/*** Modal ***/
+/*** top nav header ***/
+/*** menu header ***/
+/*** menu-mobile ***/
+/*** menu-department ***/
+/*** Banner top ***/
+/*** slider ***/
+/*** footer ***/
+/*** Product Item ***/
+/****** Style Lookbook Cosmetic ***/
+/*** Product Detail ***/
+/*** blog-item ***/
+/*** Shop page ***/
+/*** Faqs page ***/
+/*** Cart page ***/
+/*** Checkout page ***/
+/*** Compare page ***/
+/*** Scroll to top ***/
+/*** Category active ***/
+/*** Video tutorial block ***/
+/*** Text has line before ***/
+/*** Collection ***/
+/*** Tab features block ***/
+/*** Banner ***/
+/*** Before after ***/
+/*** Testimonial ***/
+/*** Instagram ***/
+/*** Benefit watch ***/
+/*** Newsletter ***/
+/*** Feature product ***/
+
+@use 'custom-swiper.scss';
+@use 'globals.scss';
+@use 'modal.scss';
+@use 'header.scss';
+@use 'slider.scss';
+@use 'footer.scss';
+@use 'product.scss';
+@use 'blog.scss';
+@use 'shop.scss';
+@use 'faqs.scss';
+@use 'cart.scss';
+@use 'checkout.scss';
+@use 'compare.scss';
+@use 'scroll-to-top.scss';
+@use 'layout/category-active.scss';
+@use 'layout/text-has-line-before.scss';
+@use 'layout/collection.scss';
+@use 'layout/tab-features.scss';
+@use 'layout/banner.scss';
+@use 'layout/testimonial.scss';
+@use 'layout/instagram.scss';
+@use 'layout/benefit.scss';
+@use 'layout/newsletter.scss';
+@use 'layout/featured-product.scss';
+
+
+@use "tailwindcss";
+@use "other.scss"
