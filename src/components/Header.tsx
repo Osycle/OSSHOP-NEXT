@@ -24,7 +24,7 @@ export default function Header() {
   const items = useCartStore((state) => state.items);
 
   // Считаем общее количество всех товаров (учитывая quantity)
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+	const totalItems = items.reduce((sum, item) => sum + item.quantityCur, 0);
 
 
   useEffect(() => {

@@ -16,13 +16,7 @@ export default function ProductCard({ product, showSoldBar = false }: Props) {
 
   const handleAddToCart = () => {
     openCart()
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.thumbImage[0],
-      quantity: 1
-    });
+    addItem({ ...product, quantityCur: 1 })
   };
 
   const discount =

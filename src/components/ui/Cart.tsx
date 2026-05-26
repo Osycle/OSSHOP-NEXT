@@ -12,7 +12,7 @@ export default function Cart() {
   useEffect(() => setIsMounted(true), []);
 
   // Считаем итоговую сумму
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantityCur, 0);
 
   if (!isMounted) return null; // Ждем загрузки клиента, чтобы localStorage прочитался корректно
 
@@ -45,7 +45,7 @@ export default function Cart() {
                 </div>
                 <div className="item-info pr-6">
                   <p className="name font-medium">{item.name}</p>
-                  <p className="price text-secondary mt-1">${item.price.toFixed(2)} x {item.quantity}</p>
+                  <p className="price text-secondary mt-1">${item.price.toFixed(2)} x {item.quantityCur}</p>
                 </div>
                 {/* Кнопка удаления товара */}
                 <button 

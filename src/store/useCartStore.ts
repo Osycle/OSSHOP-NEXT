@@ -1,16 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Описываем, как выглядит товар в корзине
+// Описываем товар в корзине
 export interface CartItem {
   id: string;
   name: string;
   price: number;
   image: string;
-  quantity: number;
+  quantityCur: number; // Текущее количество В КОРЗИНЕ
 }
 
-// Описываем все состояния и функции хранилища
 interface CartState {
   isOpen: boolean;
   items: CartItem[];
@@ -18,43 +17,67 @@ interface CartState {
   closeCart: () => void;
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
+  decreaseQuantity: (id: string) => void; // Функция убавления количества
   clearCart: () => void;
 }
 
-// Создаем само хранилище
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       isOpen: false,
-      items: [], // Список товаров
+      items: [],
 
-      // Функции управления модалкой
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
 
-      // Функция добавления товара (если такой уже есть - увеличиваем количество)
+      // ДОБАВЛЕНИЕ ИЛИ УВЕЛИЧЕНИЕ ТОВАРА
       addItem: (newItem) => set((state) => {
+        // Проверяем, есть ли уже такой товар в корзине
         const existingItem = state.items.find((item) => item.id === newItem.id);
+        
         if (existingItem) {
+          // Если есть — просто прибавляем переданное quantityCur к текущему
           return {
             items: state.items.map((item) =>
-              item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item
+              item.id === newItem.id 
+                ? { ...item, quantityCur: item.quantityCur + newItem.quantityCur } 
+                : item
             ),
           };
         }
-        return { items: [...state.items, { ...newItem, quantity: 1 }] };
+        
+        // Если нет — добавляем как новый товар
+        return { items: [...state.items, newItem] };
       }),
 
-      // Функция удаления товара
+      // УМЕНЬШЕНИЕ КОЛИЧЕСТВА (КЛИК НА МИНУС)
+      decreaseQuantity: (id) => set((state) => {
+        const existingItem = state.items.find((item) => item.id === id);
+        
+        // Если количество равно 1, то при убавлении товар должен удалиться из корзины
+        if (existingItem?.quantityCur === 1) {
+          return {
+            items: state.items.filter((item) => item.id !== id),
+          };
+        }
+        
+        // В противном случае просто убавляем quantityCur на 1
+        return {
+          items: state.items.map((item) =>
+            item.id === id ? { ...item, quantityCur: item.quantityCur - 1 } : item
+          ),
+        };
+      }),
+
+      // ПОЛНОЕ УДАЛЕНИЕ ТОВАРА (КЛИК НА КРЕСТИК/КОРЗИНКУ)
       removeItem: (id) => set((state) => ({
         items: state.items.filter((item) => item.id !== id),
       })),
 
-      // Полная очистка
       clearCart: () => set({ items: [] }),
     }),
     {
-      name: 'osshop-cart', // Под этим именем корзина сохранится в localStorage браузера
+      name: 'osshop-cart',
     }
   )
 );
