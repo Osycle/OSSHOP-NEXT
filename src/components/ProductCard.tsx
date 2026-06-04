@@ -26,6 +26,7 @@ export default function ProductCard({ product, showSoldBar = false }: Props) {
 
   return (
     <div className="product-item grid-type">
+      {/* <Link href={`/product/${product.slug}`}> */}
       <div className="product-main cursor-pointer block">
         <div className="product-thumb bg-white relative overflow-hidden rounded-2xl">
           {product.new && (
@@ -149,6 +150,7 @@ export default function ProductCard({ product, showSoldBar = false }: Props) {
           </div>
         </div>
       </div>
+      {/* </Link> */}
     </div>
   );
 }

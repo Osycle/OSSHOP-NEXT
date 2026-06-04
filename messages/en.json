@@ -1,0 +1,52 @@
+{
+  "fields": {
+    "name": "Ism",
+    "email": "Elektron pochta",
+    "phone": "Telefon raqami",
+    "message": "Xabaringiz",
+    "location": "Joylashuv",
+    "continent": "Qit'a",
+    "country": "Mamlakat",
+    "city": "Shahar",
+    "from": "natijadan",
+    "result": "tasi",
+    "new": "Yangi",
+    "popular": "Ommabop",
+    "sort": "Saralash:",
+    "filter": "Filtr",
+    "link": "Ko'proq bilib oling",
+    "submit": "Xabar yuborish",
+    "success_title": "Rahmat!",
+    "success_message": "Xabaringiz muvaffaqiyatli yuborildi. Tez orada siz bilan bog'lanamiz."
+  },
+  "menu": {
+    "home": "Bosh sahifa",
+    "countries": "Mamlakatlar",
+    "hotels": "Mehmonxonalar",
+    "services": "Xizmatlar",
+    "news": "Yangiliklar",
+    "about": "Biz haqimizda",
+    "contacts": "Kontaktlar",
+    "cities": "Shaharlar",
+    "tours": "Sayohatlar"
+  },
+  "other": {
+    "footer_popular": "Ommabop",
+    "footer_nav": "Navigatsiya",
+    "allnews": "Qolgan yangiliklar",
+    "text_placeholder": "«Ma’lumot to‘ldirilmoqda»"
+  },
+  "contacts": {
+    "title": "Biz bilan qanday bog‘lanish mumkin",
+    "description": "O‘zingizga qulay usul orqali biz bilan bog‘laning, va biz sizning ehtiyojlaringizga mos yechimni mamnuniyat bilan taklif qilamiz.",
+    "title_soc": "Bizni kuzatib boring",
+    "our_contacts": "Bizning kontaktlarimiz",
+    "our_phones": "Bizning raqamlarimiz",
+    "our_mails": "Bizning pochtamiz",
+    "visit": "Bizga shaxsan tashrif buyuring",
+    "follow": "Bizni kuzatib boring"
+  },
+  "news": {
+    "title": "So'nggi yangiliklar"
+  }
+}

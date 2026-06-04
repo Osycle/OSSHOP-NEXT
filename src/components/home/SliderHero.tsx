@@ -10,7 +10,7 @@ const slides = [
   {
     subtitle: 'Sale! Up To 50% Off!',
     title: 'Summer Sale Collections',
-    img: '/images/slider/bg1-1.png',
+    img: 'https://picsum.photos/seed/gallery_banner_1/1000/1000',
     imgAlt: 'bg1-1',
     imgClass:
       'sub-img absolute sm:w-1/2 w-3/5 2xl:-right-[60px] -right-[16px] bottom-0',
@@ -18,7 +18,7 @@ const slides = [
   {
     subtitle: 'Sale! Up To 50% Off!',
     title: 'Fashion for Every Occasion',
-    img: '/images/slider/bg1-2.png',
+    img: 'https://picsum.photos/seed/gallery_banner_2/1000/1000',
     imgAlt: 'bg1-2',
     imgClass:
       'sub-img absolute w-1/2 2xl:-right-[60px] right-0 sm:-bottom-[60px] bottom-0',
@@ -26,7 +26,7 @@ const slides = [
   {
     subtitle: 'Sale! Up To 50% Off!',
     title: 'Stylish Looks for Any Season',
-    img: '/images/slider/bg1-3.png',
+    img: 'https://picsum.photos/seed/gallery_banner_3/1000/1000',
     imgAlt: 'bg1-3',
     imgClass:
       'sub-img absolute sm:w-1/2 w-2/3 2xl:-right-[60px] -right-[36px] sm:bottom-0 -bottom-[30px]',
@@ -35,7 +35,8 @@ const slides = [
 
 export default function SliderHero() {
   return (
-    <div className="slider-block style-one bg-linear xl:h-[860px] lg:h-[800px] md:h-[580px] sm:h-[500px] h-[350px] max-[420px]:h-[320px] w-full">
+    // <div className="slider-block style-one bg-linear xl:h-[860px] lg:h-[800px] md:h-[580px] sm:h-[500px] h-[350px] max-[420px]:h-[320px] w-full">
+    <div className="slider-block style-one bg-linear md:h-[650] sm:h-[500px] h-[350px] max-[420px]:h-[320px] w-full">
       <div className="slider-main h-full w-full">
         <Swiper
           modules={[Autoplay, Pagination]}
@@ -62,9 +63,9 @@ export default function SliderHero() {
                     <Image
                       src={slide.img}
                       alt={slide.imgAlt}
-                      width={800}
-                      height={860}
-                      className="w-full h-auto"
+                      width={580}
+                      height={650}
+                      className="w-full h-auto object-cover"
                       priority
                     />
                   </div>

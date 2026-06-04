@@ -4,40 +4,56 @@ import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, FreeMode, Thumbs } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
-import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/free-mode';
 import 'swiper/css/thumbs';
 import ProductCard from '@/components/ProductCard';
 import type { Product } from '@/types/product';
+import { useCartStore } from '@/store/useCartStore'; // Подключаем хранилище корзины
 
 interface Props {
   product: Product;
   related: Product[];
-  allProducts: Product[];
+  // Удалили allProducts, так как мы больше не передаем всю базу на клиент
 }
 
-export default function ProductClient({ product, related, allProducts }: Props) {
+export default function ProductClient({ product, related }: Props) {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
-  const [activeColor, setActiveColor]   = useState(product.variation[0]?.color ?? '');
+  
+  // Добавили опциональную цепочку (?.) на случай, если у товара нет вариаций
+  const [activeColor, setActiveColor]   = useState(product.variation?.[0]?.color ?? '');
   const [activeSize, setActiveSize]     = useState('');
-  const [quantity, setQuantity]         = useState(product.quantityPurchase ?? 1);
+  const [quantity, setQuantity]         = useState(1); // Начинаем всегда с 1
   const [descTab, setDescTab]           = useState<'Description' | 'Specifications'>('Description');
   const [wishlist, setWishlist]         = useState(false);
   const [popupOpen, setPopupOpen]       = useState(false);
   const [popupIndex, setPopupIndex]     = useState(0);
   const mainSwiperRef                   = useRef<SwiperType | null>(null);
 
+  // Функция добавления в корзину из Zustand
+  const addItem = useCartStore((state) => state.addItem);
+
   const discount = product.originPrice > product.price
     ? Math.round((1 - product.price / product.originPrice) * 100)
     : 0;
 
-  const galleryImages = product.images.length > 0 ? product.images : ['/images/product/1000x1000.png'];
+  const galleryImages = product.images?.length > 0 ? product.images : ['/images/product/1000x1000.png'];
 
   const stars = (n: number) =>
     Array.from({ length: 5 }, (_, i) => (
       <i key={i} className={`ph-fill ph-star text-sm ${i < n ? 'text-yellow' : 'text-line'}`} />
     ));
+
+  // Обработчик клика "Add To Cart"
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: galleryImages[0], // Берем первую картинку из галереи
+      quantityCur: quantity // Передаем выбранное количество
+    });
+  };
 
   return (
     <>
@@ -73,7 +89,7 @@ export default function ProductClient({ product, related, allProducts }: Props) 
 
             {/* ── Left: Image Gallery ── */}
             <div className="list-img md:w-1/2 md:pr-[45px] w-full flex-shrink-0">
-              <div className="sticky">
+              <div className="sticky h-[400]">
                 {/* mySwiper2 — main large image */}
                 <Swiper
                   modules={[FreeMode, Thumbs]}
@@ -84,7 +100,8 @@ export default function ProductClient({ product, related, allProducts }: Props) 
                 >
                   {galleryImages.map((img, i) => (
                     <SwiperSlide key={i}>
-                      <div className="aspect-[3/4]">
+                      {/* aspect-[3/4] */}
+                      <div className="h-[400]">
                         <img
                           src={img}
                           alt={product.name}
@@ -190,14 +207,14 @@ export default function ProductClient({ product, related, allProducts }: Props) 
 
               {/* Actions */}
               <div className="list-action mt-6">
-                {/* Colors */}
-                {product.variation.length > 0 && (
+                {/* Colors - Added safe array check */}
+                {(product.variation?.length ?? 0) > 0 && (
                   <div className="choose-color">
                     <div className="text-title">
                       Colors: <span className="text-title color">{activeColor}</span>
                     </div>
                     <div className="list-color flex items-center gap-2 flex-wrap mt-3">
-                      {product.variation.map(v => (
+                      {product.variation?.map(v => (
                         <div
                           key={v.color}
                           onClick={() => {
@@ -219,8 +236,8 @@ export default function ProductClient({ product, related, allProducts }: Props) 
                   </div>
                 )}
 
-                {/* Sizes */}
-                {product.sizes.length > 0 && (
+                {/* Sizes - Added safe array check */}
+                {(product.sizes?.length ?? 0) > 0 && (
                   <div className="choose-size mt-5">
                     <div className="heading flex items-center justify-between">
                       <div className="text-title">
@@ -229,7 +246,7 @@ export default function ProductClient({ product, related, allProducts }: Props) 
                       <div className="caption1 size-guide text-red underline cursor-pointer">Size Guide</div>
                     </div>
                     <div className="list-size flex items-center gap-2 flex-wrap mt-3">
-                      {product.sizes.map(s => (
+                      {product.sizes?.map(s => (
                         <div
                           key={s}
                           onClick={() => setActiveSize(s)}
@@ -258,7 +275,11 @@ export default function ProductClient({ product, related, allProducts }: Props) 
                       onClick={() => setQuantity(q => q + 1)}
                     />
                   </div>
-                  <div className="add-cart-btn button-main whitespace-nowrap w-full text-center bg-white text-black border border-black cursor-pointer">
+                  {/* Подключили обработчик handleAddToCart */}
+                  <div 
+                    onClick={handleAddToCart}
+                    className="add-cart-btn button-main whitespace-nowrap w-full text-center bg-white text-black border border-black cursor-pointer hover:bg-black hover:text-white transition-colors"
+                  >
                     Add To Cart
                   </div>
                 </div>
@@ -329,239 +350,17 @@ export default function ProductClient({ product, related, allProducts }: Props) 
                     </div>
                   </div>
                 </div>
-
-                {/* You'll love this too */}
-                {allProducts.filter(p => p.type === product.type && p.id !== product.id).length > 0 && (
-                  <div className="list-product hide-product-sold menu-main mt-6">
-                    <div className="heading5 pb-4">You&apos;ll love this too</div>
-                    <div className="list-collection">
-                      <Swiper
-                        modules={[FreeMode]}
-                        slidesPerView={2}
-                        spaceBetween={16}
-                        freeMode
-                        breakpoints={{
-                          640: { slidesPerView: 3 },
-                        }}
-                      >
-                        {allProducts
-                          .filter(p => p.type === product.type && p.id !== product.id)
-                          .slice(0, 6)
-                          .map(p => (
-                            <SwiperSlide key={p.id}>
-                              <ProductCard product={p} showSoldBar />
-                            </SwiperSlide>
-                          ))}
-                      </Swiper>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Description / Specifications Tabs ── */}
-        <div className="desc-tab md:pb-20 pb-10">
-          <div className="container">
-            <div className="flex items-center justify-center w-full">
-              <div className="menu-tab flex items-center md:gap-[60px] gap-8">
-                {(['Description', 'Specifications'] as const).map(tab => (
-                  <div
-                    key={tab}
-                    onClick={() => setDescTab(tab)}
-                    className={`tab-item heading5 has-line-before text-secondary2 hover:text-black duration-300 cursor-pointer ${descTab === tab ? 'active' : ''}`}
-                  >
-                    {tab}
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="desc-block mt-8">
-              {descTab === 'Description' && (
-                <div className="desc-item description open">
-                  <div className="grid md:grid-cols-2 gap-8 gap-y-5">
-                    <div className="left">
-                      <div className="heading6">Description</div>
-                      <div className="text-secondary mt-2">{product.description}</div>
-                    </div>
-                    <div className="right">
-                      <div className="heading6">About This Product</div>
-                      <div className="list-feature">
-                        {[
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                          'Nulla luctus libero quis mauris vestibulum dapibus.',
-                          'Maecenas ullamcorper erat mi, vel consequat enim suscipit at.',
-                          'Quisque consectetur nibh ac urna molestie scelerisque.',
-                          'Mauris in nisl scelerisque massa consectetur pretium.',
-                        ].map((feat, i) => (
-                          <div key={i} className="item flex gap-1 text-secondary mt-1">
-                            <i className="ph ph-dot text-2xl" />
-                            <p>{feat}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid lg:grid-cols-4 grid-cols-2 gap-[30px] md:mt-10 mt-6">
-                    {[
-                      { icon: 'icon-delivery-truck', title: 'Shipping Faster', text: 'Use on walls, furniture, doors and many more surfaces.' },
-                      { icon: 'icon-cotton',         title: 'Cotton Material', text: 'Use on walls, furniture, doors and many more surfaces.' },
-                      { icon: 'icon-guarantee',      title: 'High Quality',    text: 'Use on walls, furniture, doors and many more surfaces.' },
-                      { icon: 'icon-leaves-compatible', title: 'Highly Compatible', text: 'Use on walls, furniture, doors and many more surfaces.' },
-                    ].map(({ icon, title, text }) => (
-                      <div key={title} className="item">
-                        <div className={`${icon} text-4xl`} />
-                        <div className="heading6 mt-4">{title}</div>
-                        <div className="text-secondary mt-2">{text}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
-              {descTab === 'Specifications' && (
-                <div className="desc-item specifications open flex items-center justify-center">
-                  <div className="lg:w-1/2 sm:w-3/4 w-full">
-                    {[
-                      { label: 'Rating',      value: <div className="flex items-center gap-1"><div className="rate flex">{stars(product.rate)}</div><p>({product.rate}.0)</p></div> },
-                      { label: 'Outer Shell', value: '100% polyester' },
-                      { label: 'Lining',      value: '100% polyurethane' },
-                      { label: 'Size',        value: product.sizes.join(', ') || 'One size' },
-                      { label: 'Colors',      value: product.variation.map(v => v.color).join(', ') || '—' },
-                      { label: 'Brand',       value: product.brand },
-                      { label: 'Category',    value: `${product.category}, ${product.type}` },
-                    ].map(({ label, value }, i) => (
-                      <div key={label} className={`item flex items-center gap-8 py-3 px-10 ${i % 2 === 0 ? 'bg-surface' : ''}`}>
-                        <div className="text-title sm:w-1/4 w-1/3">{label}</div>
-                        <div>{value}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Reviews ── */}
-        <div className="review-block md:py-20 py-10 bg-surface">
-          <div className="container">
-            <div className="heading flex items-center justify-between flex-wrap gap-4">
-              <div className="heading4">Customer Review</div>
-              <a href="#form-review" className="button-main bg-white text-black border border-black">
-                Write Reviews
-              </a>
-            </div>
-
-            <div className="top-overview flex justify-between py-6 max-md:flex-col gap-y-6">
-              <div className="rating lg:w-1/4 md:w-[30%] lg:pr-[75px] md:pr-[35px]">
-                <div className="heading flex items-center justify-center flex-wrap gap-3 gap-y-4">
-                  <div className="text-display">4.6</div>
-                  <div className="flex flex-col items-center">
-                    <div className="rate flex">{stars(5)}</div>
-                    <div className="text-secondary text-center mt-1">(1,968 Ratings)</div>
-                  </div>
-                </div>
-                <div className="list-rating mt-3">
-                  {[
-                    { star: 5, pct: 50 },
-                    { star: 4, pct: 20 },
-                    { star: 3, pct: 20 },
-                    { star: 2, pct: 5 },
-                    { star: 1, pct: 5 },
-                  ].map(({ star, pct }) => (
-                    <div key={star} className="item flex items-center justify-between gap-1.5 mt-1 first:mt-0">
-                      <div className="flex items-center gap-1">
-                        <div className="caption1">{star}</div>
-                        <i className="ph-fill ph-star text-sm" />
-                      </div>
-                      <div className="progress bg-line relative w-3/4 h-2">
-                        <div className="progress-percent absolute bg-yellow h-full left-0 top-0" style={{ width: `${pct}%` }} />
-                      </div>
-                      <div className="caption1">{pct}%</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:w-3/4 md:w-[70%] w-full lg:pl-[30px]">
-                <div className="sorting flex items-center flex-wrap md:gap-5 gap-3 gap-y-3 mt-6">
-                  <div className="text-button">Sort by</div>
-                  {['Newest', '5 Star', '4 Star', '3 Star', '2 Star', '1 Star'].map(s => (
-                    <div key={s} className="item bg-white px-4 py-1 border border-line rounded-full cursor-pointer hover:border-black duration-300">{s}</div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="list-review">
-              {[
-                { name: 'Tony Nguyen', title: 'Unbeatable Style and Quality', body: "I can't get enough of the fashion pieces from this brand. They have a great selection for every occasion and the prices are reasonable." },
-                { name: 'Sarah Miller', title: 'Exceptional Fashion: Perfect Blend of Style and Durability', body: 'The fashion brand\'s online shopping experience is seamless. The website is user-friendly, the product images are clear, and the checkout process is quick.' },
-                { name: 'James Park',  title: 'Elevate Your Wardrobe: Stunning Dresses That Make a Statement', body: 'I love how sustainable and ethically conscious this fashion brand is. They prioritize eco-friendly materials and fair trade practices.' },
-              ].map(({ name, title, body }) => (
-                <div key={name} className="item flex max-lg:flex-col gap-y-4 w-full py-6 border-t border-line">
-                  <div className="left lg:w-1/4 w-full lg:pr-[15px]">
-                    <div className="user mt-3">
-                      <div className="text-title">{name}</div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="text-secondary2">1 day ago</div>
-                        <div className="text-secondary2">—</div>
-                        <div className="text-secondary2">Yellow / XL</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="right lg:w-3/4 w-full lg:pl-[15px]">
-                    <div className="rate flex">{stars(5)}</div>
-                    <div className="heading5 mt-3">{title}</div>
-                    <div className="body1 mt-3">{body}</div>
-                    <div className="action mt-3">
-                      <div className="flex items-center gap-4">
-                        <div className="like-btn flex items-center gap-1 cursor-pointer">
-                          <i className="ph ph-hands-clapping text-lg" />
-                          <div className="text-button">20</div>
-                        </div>
-                        <a href="#form-review" className="reply-btn text-button text-secondary cursor-pointer hover:text-black">Reply</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div className="text-button more-review-btn text-center mt-2 underline cursor-pointer">
-                View More Comments
-              </div>
-            </div>
-
-            {/* Review form */}
-            <div id="form-review" className="form-review pt-6">
-              <div className="heading4">Leave A Comment</div>
-              <form className="grid sm:grid-cols-2 gap-4 gap-y-5 mt-6" onSubmit={e => e.preventDefault()}>
-                <div className="name">
-                  <input className="border-line px-4 pt-3 pb-3 w-full rounded-lg" type="text" placeholder="Your Name *" required />
-                </div>
-                <div className="mail">
-                  <input className="border-line px-4 pt-3 pb-3 w-full rounded-lg" type="email" placeholder="Your Email *" required />
-                </div>
-                <div className="col-span-full message">
-                  <textarea className="border border-line px-4 py-3 w-full rounded-lg" rows={3} placeholder="Your message *" required />
-                </div>
-                <div className="col-span-full flex items-start -mt-2 gap-2">
-                  <input type="checkbox" id="saveAccount" className="mt-1.5" />
-                  <label htmlFor="saveAccount">Save my name, email, and website in this browser for the next time I comment.</label>
-                </div>
-                <div className="col-span-full sm:pt-3">
-                  <button type="submit" className="button-main bg-white text-black border border-black">Submit Reviews</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* ── Related Products ── */}
-      {related.length > 0 && (
+      {related?.length > 0 && (
         <div className="tab-features-block filter-product-block md:py-20 py-10">
           <div className="container">
             <div className="heading3 text-center">Related Products</div>

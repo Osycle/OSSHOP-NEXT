@@ -12,7 +12,7 @@ const TABS = ['top', 't-shirt', 'dress', 'sets', 'shirt'] as const;
 export default function WhatNewBlock({ products }: Props) {
   const [activeTab, setActiveTab] = useState<string>('t-shirt');
 
-  
+  console.log(products, 'products.data')
   const filtered = products.filter((p) => p.type === activeTab).slice(0, 4);
 
   return (

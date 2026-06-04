@@ -23,7 +23,7 @@ const benefits = [
 
 export default function BenefitBlock() {
   return (
-    <div className="benefit-block md:pt-20 pt-10">
+    <div className="benefit-block md:py-20 py-10">
       <div className="container">
         <div className="list-benefit grid items-start lg:grid-cols-4 grid-cols-2 gap-[30px]">
           {benefits.map((b) => (

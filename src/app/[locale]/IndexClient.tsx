@@ -26,11 +26,7 @@ export default function IndexClient({ products }: Props) {
       <WhatNewBlock products={products} />
       <CollectionBlock />
       <TabFeaturesBlock products={products} />
-      <BannerBlock />
       <BenefitBlock />
-      <TestimonialBlock />
-      <InstagramBlock />
-      <BrandBlock />
     </>
   )
 }
