@@ -37,14 +37,13 @@ export default function ShopClient({ products, filters }: { products: Product[],
   // Локальный стейт только для переключения вида "Сетка/Список" (это не нужно слать на бэкенд)
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
 
-  // Подсчет товаров по категориям (оставляем локально, если бэкенд не присылает счетчики)
-  const typeCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    availableTypes.forEach((t: any) => { 
-      counts[t.slug] = products.filter(p => p.type === t.slug).length; 
-    });
-    return counts;
-  }, [products, availableTypes]);
+  const [expandedBlocks, setExpandedBlocks] = useState<Record<string, boolean>>({});
+  const toggleExpand = (blockName: string) => {
+    setExpandedBlocks(prev => ({
+      ...prev,
+      [blockName]: !prev[blockName]
+    }));
+  };
 
   // 2. УНИВЕРСАЛЬНАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ URL
   // При вызове она меняет URL браузера, Next.js это замечает, 
@@ -122,24 +121,36 @@ export default function ShopClient({ products, filters }: { products: Product[],
 
       <div className="shop-product breadcrumb1 lg:py-20 md:py-14 py-10">
         <div className="container">
-          <div className="flex max-md:flex-wrap max-md:flex-col-reverse gap-y-8">
+          <div className="flex max-md:flex-wrap max-md:flex-col-reverse gap-y-8 items-start">
 
             {/* ── Sidebar ── */}
             <div className="sidebar lg:w-1/4 md:w-1/3 w-full md:pr-12">
               <div className="filter-type-block pb-8 border-b border-line">
                 <div className="heading6">Products Type</div>
-                <div className="list-type filter-type menu-tab mt-4">
-                  {availableTypes.map((type: any) => (
+                <div className="list-type filter-type list-bar menu-tab mt-4">
+                  {(expandedBlocks['types'] ? availableTypes : availableTypes.slice(0, 5)).map((type: any) => (
                     <div
                       key={type.slug}
-                      className={`item tab-item flex items-center justify-between cursor-pointer${activeType === type.slug ? ' active' : ''}`}
+                      className={`item tab-item flex items-center justify-between cursor-pointer ${activeType === type.slug ? ' active' : ''}`}
                       onClick={() => handleType(type.slug)}
                     >
                       <div className="type-name text-secondary has-line-before hover:text-black capitalize">{type.name}</div>
-                      <div className="text-secondary2 number">{typeCounts[type.slug] ?? 0}</div>
+                      <div className="text-secondary2 number">{type.count ?? 0}</div>
                     </div>
                   ))}
                 </div>
+                {availableTypes.length > 5 && (
+                  <div 
+                    className="text-button text-secondary mt-3 cursor-pointer hover:text-black transition-colors flex items-center gap-1"
+                    onClick={() => toggleExpand('types')} 
+                  >
+                    {expandedBlocks['types'] ? (
+                      <>Show Less <i className="ph ph-caret-up text-sm" /></>
+                    ) : (
+                      <>+ {availableTypes.length - 5} More <i className="ph ph-caret-down text-sm" /></>
+                    )}
+                  </div>
+                )}
               </div>
 
               {availableSizes.length > 0 && (
@@ -206,7 +217,7 @@ export default function ShopClient({ products, filters }: { products: Product[],
                 <div className="filter-brand pb-8 mt-8">
                   <div className="heading6">Brands</div>
                   <div className="list-brand mt-4">
-                    {availableBrands.map((brand: any) => (
+                    {availableBrands.slice(0, 5).map((brand: any) => (
                       <div key={brand.slug} className={`brand-item flex items-center justify-between mb-2 last:mb-0 ${activeBrands.includes(brand.slug) ? ' active' : ''}`}>
                         <div className="left flex items-center cursor-pointer gap-2" onClick={() => toggleBrand(brand.slug)}>
                           <div className="block-input flex items-center justify-center w-5 h-5 border border-line rounded">
