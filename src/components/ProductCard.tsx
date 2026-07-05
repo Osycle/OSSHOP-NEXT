@@ -39,6 +39,13 @@ export default function ProductCard({ product, showSoldBar = false }: Props) {
               Sale
             </div>
           )}
+          <div className="product-info">
+            <h4>Type:  {product.type}</h4>
+            <h4>Category:  {product.category}</h4>
+            <h4>Gender:  {product.gender}</h4>
+            <h4>Brand:  {product.brand}</h4>
+          </div>
+          
           <div className="list-action-right absolute top-3 right-3 max-lg:hidden">
             <div className="add-wishlist-btn w-[32px] h-[32px] flex items-center justify-center rounded-full bg-white duration-300 relative">
               <div className="tag-action bg-black text-white caption2 px-1.5 py-0.5 rounded-sm">
